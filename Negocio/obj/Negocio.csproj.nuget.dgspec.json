@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\Negocio.csproj": {}
+    "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\Negocio.csproj": {}
   },
   "projects": {
-    "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\Negocio.csproj": {
+    "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\Negocio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\Negocio.csproj",
+        "projectUniqueName": "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\Negocio.csproj",
         "projectName": "Negocio",
-        "projectPath": "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\Negocio.csproj",
+        "projectPath": "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\Negocio.csproj",
         "packagesPath": "C:\\Users\\marti\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\obj\\",
+        "outputPath": "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\marti\\AppData\\Roaming\\NuGet\\NuGet.Config",

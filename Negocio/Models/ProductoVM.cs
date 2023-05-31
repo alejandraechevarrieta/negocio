@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Negocio.Models
 {
-    public partial class Producto
+    public partial class ProductoVM
     {
-        public Producto()
+        public ProductoVM()
         {
             Venta = new HashSet<Ventum>();
         }
@@ -15,7 +15,8 @@ namespace Negocio.Models
         public string Detalle { get; set; } = null!;
         public int? Stock { get; set; }
         public int? StockNuevo { get; set; }
-        public int? Precio { get; set; }        
+        public int? Precio { get; set; }
+        public string DetalleTipo { get; set; } = null!;
 
         public virtual TipoProducto? OTipoProducto { get; set; }
         public virtual ICollection<Ventum> Venta { get; set; }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3pfSWyvutJFDh1o/t2CgKYKqL+omO3n5SPCK3XUI6oEcsbEgyBXWSO/XKKib/LEJbXgtB0+lCWnotXw2YGtcrg==",
+  "dgSpecHash": "jQh/0VE0IoyD6trGx8YufqeIBz9M7KeRChEhb3/z/q1f+LLsT/AQA130liUaIjlQE5CNhMv3gabR7k+Vo1Kl1A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\marti\\OneDrive\\Escritorio\\negocio\\Negocio\\Negocio.csproj",
+  "projectFilePath": "C:\\Users\\marti\\OneDrive\\Escritorio\\Negocio\\Negocio\\Negocio.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\marti\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\marti\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

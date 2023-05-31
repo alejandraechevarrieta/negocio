@@ -19,6 +19,18 @@
 <button type="button" class="btn btn-success" onclick="abrirModalVenta()">
   Generar Venta
 </button>
+<!-- Filtros -->
+<div class="container">
+   <div class="row">
+      <div class="col-md-2">
+         <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="date" class="form-control" id="fechaVenta" />
+         </div>
+         <button onclick="buscarVentasDia()" class="btn btn-primary">Buscar</button>
+      </div>
+   </div>
+</div>
 
 <div class="container-responsive" style="margin-left: 2.5%; margin-block: 0.5%; margin-right: 2.5%" id="tablaVentas">
     <div class="contenedor__tabla hov">
@@ -189,7 +201,45 @@ function cargarDatosProducto() {
             }
         });
     }
+     function buscarVentasDia() {
+        var fechaSelec = $('#fechaVenta').val();
 
+        $.ajax({
+            url: '/Ventas/BuscarVentasDia',
+            type: 'POST',
+            data: { fechaSelec: fechaSelec },
+            dataType: 'json',
+            success: function (response) {
+                 actualizarTablaVentas(response);
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+    function actualizarTablaVentas(ventas) {   
+    $('#tablaVentas tbody tr').remove();
+   
+    ventas.forEach(function(ventas) {        
+      var row = '<tr>' +
+                '<td>' + ventas.detalleProducto + '</td>' +
+                '<td>' + ventas.unidades + '</td>' +
+                '<td>' + ventas.precioUnidad + '</td>' +
+                '<td>' + ventas.total + '</td>' +
+                '<td>' + ventas.fechaVenta + '</td>' +
+                '<td>' +
+                '<a href="#" class="btn btn-danger" style="color:white; margin-right: 0px;" title="Eliminar" onclick="eliminarVenta(\'' + ventas.idVenta + '\')">' +
+                '<i class="fa fa-window-close"></i>' +
+                '</a>' +
+                '</td>' +
+                '</tr>';
+
+      $('#tablaVentas tbody').append(row);
+    });
+  }
 
 </script>
 

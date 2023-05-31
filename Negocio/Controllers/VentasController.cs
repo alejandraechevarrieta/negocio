@@ -124,8 +124,35 @@ namespace Negocio.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+        [HttpPost]
+        public IActionResult BuscarVentasDia(DateTime fechaSelec)
+        {
+            try
+            {
+                var productos = (from v in _DBContext.Venta
+                                 join p in _DBContext.Productos on v.IdProducto equals p.IdProducto
+                                 where v.fechaVenta == fechaSelec
+                                 select new VentasVM
+                                 {
+                                     IdVenta = v.IdVenta,
+                                     IdProducto = v.IdProducto,
+                                     Unidades = v.Unidades,
+                                     PrecioUnidad = v.PrecioUnidad,
+                                     Total = v.Total,
+                                     fechaVenta = v.fechaVenta,
+                                     DetalleProducto = p.Detalle
 
-       
-        
+                                 }).OrderByDescending(p => p.fechaVenta).ToList();
+
+                return Json(productos);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
+
     }
 }

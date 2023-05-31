@@ -131,30 +131,35 @@ namespace Negocio.Controllers
             
             return View("EditarProducto", producto);
         }
+               
         [HttpPost]
         public IActionResult BuscarProductosPorTipo(int tipoId)
         {
             try
-            {                
-                var productos = tipoId == 0
-                    ? _DBContext.Productos.ToList() 
-                    : _DBContext.Productos.Where(p => p.OTipoProducto.IdTipo == tipoId).ToList();
-               
-                var productosResponse = productos.Select(p => new
-                {
-                    nombre = p.Detalle,
-                    tipo = p.OTipoProducto.Detalle,
-                    stock = p.Stock,
-                    precio = p.Precio
-                });
-                
-                return Json(productosResponse);
+            {
+                var productos = (from p in _DBContext.Productos
+                                 join t in _DBContext.TipoProductos on p.IdTipo equals t.IdTipo
+                                 where tipoId == 0 || p.IdTipo == tipoId
+                                 select new ProductoVM
+                                 {
+                                     IdProducto = p.IdProducto,
+                                     Detalle = p.Detalle,
+                                     Precio = p.Precio,
+                                     Stock = p.Stock,
+                                     IdTipo = p.IdTipo,
+                                     DetalleTipo = t.Detalle
+                                     
+                                 }).OrderByDescending(p => p.Detalle).ToList();
+
+                return Json(productos);
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
+
 
         public IActionResult Ventas()
         {

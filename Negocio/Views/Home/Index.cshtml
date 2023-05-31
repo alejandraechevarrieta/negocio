@@ -23,6 +23,22 @@
 <button type="button" class="btn btn-secondary" onclick="abrirModalNuevoTipo()">
   Crear Tipo 
 </button>
+
+
+<div class="container">
+   <div class="row">
+      <div class="col-md-2">           
+         <div class="form-group">            
+            <label for="nuevoTipo">Tipo:</label>
+            <select class="form-control" id="tipoProducto">
+               <option value="">Todos los tipos</option>       
+            </select>  
+             <button onclick="buscarProductosPorTipo()" class="btn btn-primary">Buscar</button>
+         </div>         
+      </div>    
+   </div>
+</div>
+
 <!-- Grilla -->
 <div class="container-responsive" style="margin-left: 2.5%; margin-block: 0.5%; margin-right: 2.5%" id="tablaProductos">
     <div class="contenedor__tabla hov">
@@ -153,6 +169,7 @@
 </div>
 <script>
 cargarTipos();
+cargarTiposFiltro();
 
 function cerrarEditar() {
         $('#modalEditar').modal('hide');
@@ -296,6 +313,23 @@ function guardarNuevoTipo() {
 }
 
 //Filtros
+function cargarTiposFiltro() {
+    var selectTipo = $('#tipoProducto');
+
+    selectTipo.append($('<option/>', { value: '', text: 'Seleccionar' }).hide());
+
+    var url = '/Home/CargarTipos';
+    $.getJSON(url)
+        .done(function (data) {
+            console.log(data);
+            $.each(data, function (index, result) {
+                selectTipo.append($('<option/>', {
+                    value: result.idTipo,
+                    text: result.detalle
+                }));
+            });
+                    });
+}
  function cargarProductosPorTipo(idTipo) {
         $.ajax({
             url: '/Home/ObtenerProductosPorTipo',
@@ -312,33 +346,47 @@ function guardarNuevoTipo() {
             }
         });
     }
+    function actualizarTablaProductos(productos) {   
+    $('#tablaProductos tbody tr').remove();
+   
+    productos.forEach(function(producto) {        
+      var row = '<tr>' +
+                 '<td>' + producto.detalle + '</td>' +
+                '<td>' + producto.detalleTipo + '</td>' +
+                '<td>' + producto.stock + '</td>' +
+                '<td>' + producto.precio + '</td>' +
+                '<td>' +
+                '<a href="#" class="btn btn-primary" style="color:white; margin-right: 0px;" title="Editar" onclick="abrirModalEditar(\'' + producto.IdProducto + '\')">' +
+                '<i class="fa fa-pencil-alt"></i>' +
+                '</a>' +
+                '</td>' +
+                '</tr>';
 
-     function buscarProductos() {
-        var tipoId = $('#selectTipo').val();
-
-        $.ajax({
-            url: '/Home/BuscarProductosPorTipo',
-            type: 'POST',
-            data: { tipoId: tipoId },
-            dataType: 'json',
-            success: function (response) {
-                
-                console.log(response);
-            },
-            error: function (xhr, status, error) {
-                console.log(xhr.responseText);
-                console.log(status);
-                console.log(error);
-            }
-        });
-    }
-
-
-     
+      $('#tablaProductos tbody').append(row);
+    });
+  }
 
     
     
+  function buscarProductosPorTipo() {
+    var tipoProducto = document.getElementById('tipoProducto').value;
 
+    $.ajax({
+      url: '/Home/BuscarProductosPorTipo',
+      type: 'POST',
+      data: { tipoId: tipoProducto },
+      dataType: 'json',
+      success: function(response) {
+        actualizarTablaProductos(response);
+      },
+      error: function(xhr, status, error) {
+        console.log(xhr.responseText);
+        console.log(status);
+        console.log(error);
+      }
+    });
+  }
 
-
+      
+  
 </script>
