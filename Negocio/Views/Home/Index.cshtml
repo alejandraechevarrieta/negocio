@@ -1,0 +1,344 @@
+﻿@model List<Negocio.Models.Producto>
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+<div class="text-center">
+    <h1 class="display-4">Lista de Productos</h1>
+   
+</div>
+<!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-warning" onclick="abrirModal()">
+  Crear Producto
+</button>
+<!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-secondary" onclick="abrirModalNuevoTipo()">
+  Crear Tipo 
+</button>
+<!-- Grilla -->
+<div class="container-responsive" style="margin-left: 2.5%; margin-block: 0.5%; margin-right: 2.5%" id="tablaProductos">
+    <div class="contenedor__tabla hov">
+        <table id="tablaProductos" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in Model)
+                {
+                    <tr>
+                        <td>@producto.Detalle</td>
+                        <td>@producto.OTipoProducto.Detalle</td>
+                        <td>@producto.Stock</td>
+                        <td>@producto.Precio</td>
+                        <td>
+                            <a href="#" class="btn btn-primary" style="color:white; margin-right: 0px;" title="Editar" onclick="abrirModalEditar('@producto.IdProducto')">
+                                <i class="fa fa-pencil-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarLabel">Editar Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="editarNombre">Nombre:</label>
+                    <input type="text" class="form-control" id="editarNombre" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="editarTipo">Tipo:</label>
+                    <input type="text" class="form-control" id="editarTipo" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="editarStock">Stock:</label>
+                    <input type="text" class="form-control" id="editarStock" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="editarPrecio">Precio:</label>
+                    <input type="text" class="form-control" id="editarPrecio">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarEditar()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id= "btnGuardarCambios" onclick="guardarCambios()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Nuevo -->
+<div class="modal fade" id="modalNuevo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevoLabel">Crear Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="nuevoNombre">Nombre:</label>
+                    <input type="text" class="form-control" id="nuevoNombre">
+                </div>
+                <div class="form-group">
+                    <label for="nuevoTipo">Tipo:</label>
+                    <select class="form-control" id="nuevoTipo">
+                        <option value="">Seleccionar</option>        
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nuevoStock">Stock:</label>
+                    <input type="text" class="form-control" id="nuevoStock">
+                </div>
+                <div class="form-group">
+                    <label for="nuevoPrecio">Precio:</label>
+                    <input type="text" class="form-control" id="nuevoPrecio">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarNuevoProducto()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="crearNuevoProducto()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Nuevo Tipo -->
+<div class="modal fade" id="modalNuevoTipo" tabindex="-1" role="dialog" aria-labelledby="modalNuevoTipo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevoTipo">Crear Tipo de Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">               
+                <div class="form-group">
+                    <label for="crearTipo">Nombre:</label>
+                    <input type="text" class="form-control" id="crearTipo">
+                </div>                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarNuevoTipo()">Cancelar</button>
+                <button type="button" class="btn btn-primary" id= "btnGuardarNuevoTipo" onclick="guardarNuevoTipo()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+cargarTipos();
+
+function cerrarEditar() {
+        $('#modalEditar').modal('hide');
+    }
+function cerrarNuevoProducto() {
+        $('#modalNuevo').modal('hide');
+    }
+function cerrarNuevoTipo() {
+        $('#modalNuevoTipo').modal('hide');
+}    
+function abrirModal() {
+  $('#modalNuevo').modal('show');
+}
+function abrirModalNuevoTipo() {
+  $('#modalNuevoTipo').modal('show');
+}
+
+//Editar Producto
+function abrirModalEditar(idProducto) {      
+        $.ajax({
+            url: '/Home/ObtenerProducto', 
+            type: 'POST',
+            data: { id: idProducto },
+            dataType: 'json',
+            success: function (response) {                
+                $('#editarNombre').val(response.nombre);
+                $('#editarTipo').val(response.tipo);
+                $('#editarStock').val(response.stock);
+                $('#editarPrecio').val(response.precio);
+               
+                $('#btnGuardarCambios').data('idProducto', idProducto);
+
+                // Abrir el modal
+                $('#modalEditar').modal('show');
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+   function guardarCambios() {   
+    var idProducto = $('#btnGuardarCambios').data('idProducto');
+    
+    var nombre = $('#editarNombre').val();
+    var tipo = $('#editarTipo').val();
+    var stock = $('#editarStock').val();
+    var precio = $('#editarPrecio').val();
+    
+    var producto = {
+        IdProducto: idProducto,
+        Detalle: nombre,
+        OTipoProducto: { Detalle: tipo },
+        Stock: stock,
+        Precio: precio
+    };    
+    $.ajax({
+        url: '/Home/GuardarCambios', 
+        type: 'POST',
+        data: producto,
+        success: function (response) {
+             $('#modalEditar').modal('hide');
+            window.location.href = '/';
+        },
+        error: function (xhr, status, error) {
+            console.log(xhr.responseText);
+            console.log(status);
+            console.log(error);
+        }
+    });
+}
+
+//Crear Nuevo Producto
+ function crearNuevoProducto() {    
+   
+    var nombre = document.getElementById("nuevoNombre").value;
+    var tipo = document.getElementById("nuevoTipo").value;
+    var stock = document.getElementById("nuevoStock").value;
+    var precio = document.getElementById("nuevoPrecio").value;
+
+    var nuevoProducto = {
+        Detalle: nombre,
+        idTipo: tipo,
+        stock: stock,
+        precio: precio
+    };   
+    $.ajax({
+        url: '/Home/CrearProducto',
+        type: 'POST',
+        dataType: 'json',
+        data: nuevoProducto,
+        success: function (data) {
+          
+            $('#modalNuevo').modal('hide');
+             window.location.href = '/';
+        },
+        error: function (error) {
+           
+        }
+    });
+}
+function cargarTipos() {
+    var selectTipo = $('#nuevoTipo');
+
+    selectTipo.append($('<option/>', { value: '', text: 'Seleccionar' }).hide());
+
+    var url = '/Home/CargarTipos';
+    $.getJSON(url)
+        .done(function (data) {
+            console.log(data);
+            $.each(data, function (index, result) {
+                selectTipo.append($('<option/>', {
+                    value: result.idTipo,
+                    text: result.detalle
+                }));
+            });
+                    });
+}
+//Crear nuevo tipo
+function guardarNuevoTipo() {      
+    var nombre = document.getElementById("crearTipo").value;   
+    
+    var nuevoTipo = {
+        Detalle: nombre,       
+    };
+    $.ajax({
+        url: '/Home/CrearTipo',
+        type: 'POST',
+        dataType: 'json',
+        data: nuevoTipo,
+        success: function (data) {         
+            $('#modalNuevoTipo').modal('hide');
+            cargarTipos();
+        },
+        error: function (error) {
+           
+        }
+    });
+}
+
+//Filtros
+ function cargarProductosPorTipo(idTipo) {
+        $.ajax({
+            url: '/Home/ObtenerProductosPorTipo',
+            type: 'POST',
+            data: { idTipo: idTipo },
+            dataType: 'json',
+            success: function (response) {                
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+     function buscarProductos() {
+        var tipoId = $('#selectTipo').val();
+
+        $.ajax({
+            url: '/Home/BuscarProductosPorTipo',
+            type: 'POST',
+            data: { tipoId: tipoId },
+            dataType: 'json',
+            success: function (response) {
+                
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+
+     
+
+    
+    
+
+
+
+</script>

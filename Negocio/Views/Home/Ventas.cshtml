@@ -1,0 +1,195 @@
+﻿@model List<Negocio.Models.Ventum>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.0/css/jquery.dataTables.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+
+<div class="text-center">
+    <h1 class="display-4">Administración de Ventas</h1>
+   
+</div>
+<!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-success" onclick="abrirModalVenta()">
+  Generar Venta
+</button>
+
+<div class="container-responsive" style="margin-left: 2.5%; margin-block: 0.5%; margin-right: 2.5%" id="tablaVentas">
+    <div class="contenedor__tabla hov">
+        <table id="tablaVentas" class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Unidades</th>
+                    <th>Precio Unidad</th>
+                    <th>Total</th>
+                    <th>Fecha de Venta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ventum in Model)
+                {
+                    <tr>
+                        <td>@ventum.OIdProducto.Detalle</td>
+                        <td>@ventum.Unidades</td>
+                        <td>@ventum.PrecioUnidad</td>
+                        <td>@ventum.Total</td>
+                        <td>@ventum.fechaVenta</td>
+                        <td>
+                            <a href="#" class="btn btn-danger" style="color:white; margin-right: 0px;" title="Eliminar" onclick="eliminarVenta('@ventum.IdVenta')">
+                            <i class="fa fa-window-close"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal Nueva Venta -->
+<div class="modal fade" id="modalNuevaVenta" tabindex="-1" role="dialog" aria-labelledby="modalNuevaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNuevaLabel">Cargar Nueva Venta</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="productoVenta">Producto:</label>
+                    <select class="form-control" id="productoVenta" onchange="cargarDatosProducto()">
+                        <option value="">Seleccionar</option>        
+                    </select>
+                </div>  
+                <div class="form-group">
+                    <label for="stockVenta">Stock:</label>
+                    <input type="text" class="form-control" id="stockVenta" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="precioVenta">Precio:</label>
+                    <input type="text" class="form-control" id="precioVenta" disabled>
+                </div>
+                 <div class="form-group">
+                    <label for="unidadesVenta">Unidades:</label>
+                    <input type="text" class="form-control" id="unidadesVenta">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cerrarNuevaVenta()">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="crearNuevaVenta()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    cargarProductos();    
+
+function abrirModalVenta() {
+        $('#modalNuevaVenta').modal('show');
+    }
+     
+function cerrarNuevaVenta() {
+        $('#modalNuevaVenta').modal('hide');}
+
+//Nueva Venta
+function crearNuevaVenta() {    
+   
+    var idProducto = document.getElementById("productoVenta").value;
+    var unidades = document.getElementById("unidadesVenta").value;
+    var precioUnidad = document.getElementById("precioVenta").value;   
+
+    var nuevaVenta = {
+        idProducto: idProducto,
+        unidades: unidades,  
+        PrecioUnidad: precioUnidad,
+    };   
+    $.ajax({
+        url: '/Ventas/CrearVenta',
+        type: 'POST',
+        dataType: 'json',
+        data: nuevaVenta,
+        success: function (data) {
+          
+            $('#modalNuevaVenta').modal('hide');
+             window.location.href = '/Home/Ventas';
+        },
+        error: function (error) {
+           
+        }
+    });
+}
+function cargarProductos() {
+    var selectProducto = $('#productoVenta');
+
+    selectProducto.append($('<option/>', { value: '', text: 'Seleccionar' }).hide());
+
+    var url = '/Ventas/CargarProductos';
+    $.getJSON(url)
+        .done(function (data) {
+            console.log(data);
+            $.each(data, function (index, result) {
+                selectProducto.append($('<option/>', {
+                    value: result.idProducto,
+                    text: result.detalle
+                }));
+            });           
+        });
+}
+//Cargar datos de un producto al modal
+function cargarDatosProducto() {
+    var idProducto = document.getElementById("productoVenta").value;
+        
+        $.ajax({
+            url: '/Ventas/ObtenerProducto', 
+            type: 'POST',
+            data: { id: idProducto },
+            dataType: 'json',
+            success: function (response) {               
+                $('#stockVenta').val(response.stockNuevo);
+                $('#precioVenta').val(response.precio);   
+              
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+//Eliminar ventas
+        function eliminarVenta(idVenta) {        
+        $.ajax({
+            url: '/Ventas/EliminarVenta',
+            type: 'POST',
+            data: { idVenta: idVenta },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {                    
+                    alert("La venta se eliminó correctamente.");   
+                     window.location.href = '/Home/Ventas';
+                } else {                    
+                    alert("Ocurrió un error al eliminar la venta: " + response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+            }
+        });
+    }
+
+
+</script>
+
